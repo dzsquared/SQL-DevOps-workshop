@@ -78,7 +78,7 @@ In this example, we're going to create a pipeline that runs a test deploy of the
 
         - name: Publish SQL project
           run: |
-            SqlPackage /Action:Publish /SourceFile:Wingtips/bin/Debug/Wingtips.dacpac /TargetConnectionString:"Data Source=localhost,1433;Database=Wingtips;User ID=sa;Password=${{ secrets.CONTAINER_SQL_PASSWORD }};TrustServerCertificate=True;" /p:AllowIncompatiblePlatform=true
+            sqlpackage /Action:Publish /SourceFile:Wingtips/bin/Debug/Wingtips.dacpac /TargetConnectionString:"Data Source=localhost,1433;Database=Wingtips;User ID=sa;Password=${{ secrets.CONTAINER_SQL_PASSWORD }};TrustServerCertificate=True;" /p:AllowIncompatiblePlatform=true
    ```
   The SqlPackage command is the same as the one we used for Azure SQL Database, but with the `AllowIncompatiblePlatform` flag allows us to deploy to a different platform than what the project targets.
 2. Commit the file to the `main` branch and push it to GitHub.

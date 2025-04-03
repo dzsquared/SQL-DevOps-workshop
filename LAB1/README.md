@@ -102,7 +102,7 @@ In this section we're going to create a GitHub Actions pipeline to publish the S
   ```yml
     - name: Publish SQL project
       run: |
-        SqlPackage /Action:Publish /SourceFile:Wingtips/bin/Debug/Wingtips.dacpac /TargetConnectionString:${{ secrets.SQL_CONNECTION_STRING }}
+        sqlpackage /Action:Publish /SourceFile:Wingtips/bin/Debug/Wingtips.dacpac /TargetConnectionString:${{ secrets.SQL_CONNECTION_STRING }}
   ```
   Note that the path to the source file is relative to the working directory of the pipeline, which starts at the root of the repository, and the name of the `.dacpac` file defaults to the name of the project.
 7. Commit the changes to the pipeline file.
@@ -138,7 +138,7 @@ In this section we're going to create a GitHub Actions pipeline to publish the S
           run: dotnet build Wingtips/Wingtips.sqlproj --no-restore
         - name: Publish SQL project
           run: |
-            SqlPackage /Action:Publish /SourceFile:Wingtips/bin/Debug/Wingtips.dacpac /TargetConnectionString:${{ secrets.SQL_CONNECTION_STRING }}
+            sqlpackage /Action:Publish /SourceFile:Wingtips/bin/Debug/Wingtips.dacpac /TargetConnectionString:${{ secrets.SQL_CONNECTION_STRING }}
 ```
 </details>
 
