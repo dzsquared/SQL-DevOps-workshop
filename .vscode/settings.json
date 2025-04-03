@@ -1,0 +1,12 @@
+{
+    "dataworkspace.excludedProjects": [
+        "LAB2/Results/Wingtips/Wingtips.sqlproj",
+        "LAB2/Results/FabricWorkspace/Wingtips.SQLDatabase/Wingtips.sqlproj",
+        "LAB3/Results/Results/Wingtips/Wingtips.sqlproj",
+        "LAB4/Results/Results/Wingtips/Wingtips.sqlproj",
+        "LAB3/Results/Results/FabricWorkspace/Wingtips.SQLDatabase/Wingtips.sqlproj",
+        "LAB4/Results/Results/FabricWorkspace/Wingtips.SQLDatabase/Wingtips.sqlproj",
+        "LAB4/Results/Results/WingtipsFromLiveDB/WingtipsFromLiveDB.sqlproj",
+        "LAB1/Results/Wingtips/Wingtips.sqlproj"
+    ]
+}
