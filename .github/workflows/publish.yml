@@ -23,4 +23,4 @@
           run: dotnet build Wingtips/Wingtips.sqlproj --no-restore
         - name: Publish SQL project
           run: |
-            SqlPackage /Action:Publish /SourceFile:Wingtips/bin/Debug/Wingtips.dacpac /TargetConnectionString:${{ Secrets.Server=tcp:serverazdt4aduxiuc2uzi.database.windows.net,1433;Database=Wingtips;User ID=student;Password=Fabcon#25drr;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30; }}}
+            SqlPackage /Action:Publish /SourceFile:Wingtips/bin/Debug/Wingtips.dacpac /TargetConnectionString:${{ Secrets.SQL_CONNECTION_STRING }}
