@@ -1,4 +1,3 @@
 title: SQL DevOps workshop
 description: SQL projects and source control integration for SQL in Fabric, Azure SQL, and SQL Server
-# markdown: GFM
-# markdown: CommonMarkGhPages
+markdown: GFM
