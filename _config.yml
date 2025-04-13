@@ -2,7 +2,7 @@ title: SQL DevOps workshop
 description: SQL projects and source control integration for SQL in Fabric, Azure SQL, and SQL Server
 
 theme: minima
-baseurl: ''
+baseurl: ""
 
 perma_link: "https://aka.ms/sql-devops-workshop"
 github_repo: "dzsquared/sql-devops-workshop"
