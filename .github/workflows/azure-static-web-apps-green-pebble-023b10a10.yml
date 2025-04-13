@@ -29,14 +29,14 @@ jobs:
         if: github.event_name == 'pull_request'
         id: jekyllbundle-pr
         run: |
-          bundle exec jekyll build --baseurl "https://green-pebble-023b10a10-${{ github.event.number }}.centralus.6.azurestaticapps.net/"
+          bundle exec jekyll build --url "https://green-pebble-023b10a10-${{ github.event.number }}.centralus.6.azurestaticapps.net/"
         env:
           JEKYLL_ENV: production
       - name: Jekyll bundle
         if: github.event_name == 'push'
         id: jekyllbundle-main
         run: |
-          bundle exec jekyll build --baseurl "https://green-pebble-023b10a10.6.azurestaticapps.net/"
+          bundle exec jekyll build --url "https://green-pebble-023b10a10.6.azurestaticapps.net/"
         env:
           JEKYLL_ENV: production
       - name: Build And Deploy
