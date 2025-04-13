@@ -27,7 +27,9 @@ jobs:
           cache-version: 0 # Increment this number if you need to re-download cached gems
       - name: Jekyll bundle
         id: jekyllbundle
-        run: bundle exec jekyll build
+        run: |
+          bundle install
+          bundle exec jekyll build
         env:
           JEKYLL_ENV: production
       - name: Build And Deploy
@@ -39,7 +41,7 @@ jobs:
           action: "upload"
           ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
-          app_location: "_site" # App source code path
+          app_location: "/_site" # App source code path
           skip_app_build: true
           # api_location: "" # Api source code path - optional
           # output_location: "_site" # Built app content directory - optional
