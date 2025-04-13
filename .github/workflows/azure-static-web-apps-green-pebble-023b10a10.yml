@@ -23,15 +23,15 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.4' # Not needed with a .ruby-version file
-          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-          cache-version: 0 # Increment this number if you need to re-download cached gems
+          # bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+          # cache-version: 0 # Increment this number if you need to re-download cached gems
       - name: Jekyll bundle
         id: jekyllbundle
         run: |
           bundle install
           bundle exec jekyll build
-        env:
-          JEKYLL_ENV: production
+        # env:
+        #   JEKYLL_ENV: production
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
