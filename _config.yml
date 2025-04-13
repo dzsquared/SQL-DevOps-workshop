@@ -1,4 +1,13 @@
 title: SQL DevOps workshop
 description: SQL projects and source control integration for SQL in Fabric, Azure SQL, and SQL Server
-# markdown: GFM
-# markdown: CommonMarkGhPages
+
+theme: minima
+
+perma_link: "https://aka.ms/sql-devops-workshop"
+github_repo: "dzsquared/sql-devops-workshop"
+
+header_pages:
+  - LAB1/README.md
+  - LAB2/README.md
+  - LAB3/README.md
+  - LAB4/README.md

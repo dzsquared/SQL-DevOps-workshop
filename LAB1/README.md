@@ -1,10 +1,15 @@
-# LAB 1: Participants configure a simple CI/CD pipelines for a sample SQL project
+---
+layout: page
+title: "Lab 1"
+description: "Participants configure a simple CI/CD pipelines for a sample SQL project"
+permalink: /LAB1/
+---
 
 **Overview:**
-- 1.1: Create a project from an existing database
-- 1.2: Create a pipeline to publish the project to the database
-- 1.3: Create a pipeline to build the project and run code analysis
-- 1.4: Deploy our changes to the database
+- [1.1](#11-create-a-project-from-an-existing-database): Create a project from an existing database
+- [1.2](#12-create-a-pipeline-to-publish-the-project-to-the-database): Create a pipeline to publish the project to the database
+- [1.3](#13-create-a-pipeline-to-build-the-project-and-run-code-analysis): Create a pipeline to build the project and run code analysis
+- [1.4](#14-deploying-our-changes-to-the-database): Deploy our changes to the database
 
 ## Workshop prerequisites
 
@@ -25,26 +30,28 @@ You must have the following installed on your machine:
 3. Follow the prompts to create a new SQL project named `Wingtips` from the database in a folder called `Wingtips` in the workshop folder.
 4. From the SQL projects extension, right-click on the **Wingtips** project and select **Build** to build the project. This will create a `.dacpac` file in the `bin/Debug` folder of the project. The `.dacpac` file is a compiled version of the SQL database model.
 
-5. Since we don't want to include files like a `.dacpac` in our future git repository, we need to add a `.gitignore` file to the project. Open the **Terminal** in VS Code (View menu > Terminal or Ctrl+`), and run the following command to create a `.gitignore` file in the workshop folder:
-   ```bash
-   dotnet new gitignore
-   ```
+5. Since we don't want to include files like a `.dacpac` in our future git repository, we need to add a `.gitignore` file to the project. Open the **Terminal** in VS Code (View menu > Terminal or Ctrl+\`), and run the following command to create a `.gitignore` file in the workshop folder:
+  ```bash
+  dotnet new gitignore
+  ```
 
 ### Push the project to a new private GitHub repository
 
 1. From the **Source Control** view in VS Code, initialize a git repository and commit the entire project to the repository with a commit message like "initial commit".
 2. The commit button in the Source Control view will now display **Publish Branch**. Click the button to publish the branch to a new private GitHub repository.
 
-![publish branch](images/publish-button.png)
+  ![publish branch](images/publish-button.png)
 
+{:start="3"}
 3. If you are prompted to sign in to GitHub, follow the prompts to sign in. 
 4. Select the private option for the repository, adjusting the name if you want to.
 
-![new repo](images/new-repo-vsc.png)
+  ![new repo](images/new-repo-vsc.png)
 
+{:start="5"}
 5. The repository will be created and the branch will be pushed to the new repository. A notification will appear in the bottom right corner of VS Code with a link to the new repository which will also be available in the GitHub website.
 
-![repository created](images/repo-success.png)
+  ![repository created](images/repo-success.png)
 
 ## 1.2 Create a pipeline to publish the project to the database
 
@@ -92,24 +99,33 @@ In this section we're going to create a GitHub Actions pipeline to publish the S
   Remove the `push` and `pull_request` events, which trigger the pipeline on every commit and pull request to the specified branches.
 5. Remove the `Test` step in the pipeline and modify the pipeline name in the YAML to "Deploy SQL project".
 6. Modify the `Restore` and `Build` steps to build the SQL project in the `Wingtips` folder by specifying the project file:
+  {% raw %}
   ```yml
     - name: Restore dependencies
       run: dotnet restore Wingtips/Wingtips.sqlproj
     - name: Build
       run: dotnet build Wingtips/Wingtips.sqlproj --no-restore
   ```
+  {% endraw %}
+
+{:start="6"}
 6. Add a step to the pipeline that uses **SqlPackage** to publish the `.dacpac` to the database after the SQL project has been built:
+  {% raw %}
   ```yml
     - name: Publish SQL project
       run: |
         sqlpackage /Action:Publish /SourceFile:Wingtips/bin/Debug/Wingtips.dacpac /TargetConnectionString:${{ secrets.SQL_CONNECTION_STRING }}
   ```
+  {% endraw %}
   Note that the path to the source file is relative to the working directory of the pipeline, which starts at the root of the repository, and the name of the `.dacpac` file defaults to the name of the project.
+
+{:start="7"}
 7. Commit the changes to the pipeline file.
 8. Add a secret to the GitHub repository named `SQL_CONNECTION_STRING` with the connection string to the Azure SQL Database. Secrets are used to store sensitive information in GitHub Actions and are set in the repository settings under "secrets and variables" and "actions".
 9. We won't run this pipeline just yet since we have no changes to apply to the database. We'll run it later after we make some changes to the project.
 
-<details>
+{% raw %}
+<details markdown="1">
 <summary>Completed publish pipeline (expand to check your work)</summary>
 
 ```yml
@@ -140,8 +156,9 @@ In this section we're going to create a GitHub Actions pipeline to publish the S
           run: |
             sqlpackage /Action:Publish /SourceFile:Wingtips/bin/Debug/Wingtips.dacpac /TargetConnectionString:${{ secrets.SQL_CONNECTION_STRING }}
 ```
-</details>
 
+</details>
+{% endraw %}
 
 ## 1.3 Create a pipeline to build the project and run code analysis
 
@@ -149,6 +166,7 @@ In this section we're going to leverage SQL code analysis to provide ongoing fee
 
 1. In VS Code, sync our project with the remote GitHub repository. A folder `.github` will be created in the root of the project with a `workflows` folder inside it.
 2. In the `.github/workflows` folder, create a new file named `build-codeanalysis.yml` with the following content:
+
   ```yml
     name: Build SQL project with code analysis
     
@@ -175,8 +193,9 @@ In this section we're going to leverage SQL code analysis to provide ongoing fee
         - name: Build
           run: dotnet build Wingtips/Wingtips.sqlproj /p:RunSqlCodeAnalysis=true
   ```
-
   This pipeline will run on every commit to the main branch and pull requests against main.
+
+{:start="3"}
 3. We'll test our new pipeline with a new stored procedure. In VS Code, switch to a new branch named `new-venue`.
 4. In the `Wingtips` project folder, add a new file in `dbo/StoredProcedures` named `NewVenue.sql`. Add the following content to the file:
 
@@ -210,11 +229,13 @@ In this section we're going to leverage SQL code analysis to provide ongoing fee
   
   RETURN 0
   ```
+
+{:start="5"}
 5. Commit the new stored procedure to the `new-venue` branch and push the branch to GitHub.
 6. In GitHub, create a pull request from the `new-venue` branch to the `main` branch.
 7. In the pull request, select the **Checks** tab and see that the pipeline is running.
 8. When the pipeline completes, select the **Details** link to see the results of the code analysis.
-<details>
+<details markdown="1">
 <summary>Code analysis results (expand to check your work)</summary>
 
 The code analysis returns 1 warning:
@@ -229,6 +250,7 @@ Build succeeded.
 
 </details>
 
+{:start="9"}
 9. Based on the code analysis results, we realize that our stored procedure `dbo.NewVenue` is using the right size for the VenueName parameter (128 characters) but the table its being inserted into is using a smaller size. Let's fix that by modifying the size of the `VenueName` column in the `dbo.Venues` table to 128 characters.
 10. In the `Wingtips` project folder, open the file `dbo.Tables/Venues.sql` and change the size of the `VenueName` column from 50 to 128 characters:
 
@@ -239,6 +261,7 @@ CREATE TABLE [dbo].[Venues] (
   ...
 ```
 
+{:start="11"}
 11. Commit the change to the `new-venue` branch and push the change to GitHub.
 12. In GitHub, the pipeline will automatically run again and this time the code analysis will pass.
 13. In GitHub, merge the pull request to the `main` branch.
@@ -256,5 +279,5 @@ The changes we made added a new stored procedure and changed a column in a table
 
 ## Next lab
 
-[LAB 2: Participants deploy SQL projects to different platforms](../LAB2/README.md)
+[Lab  2: Participants deploy SQL projects to different platforms](/LAB2/)
 

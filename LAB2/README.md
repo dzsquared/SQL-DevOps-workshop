@@ -1,9 +1,14 @@
-# LAB 2: Participants deploy SQL projects to different platforms
+---
+layout: page
+title: "Lab 2"
+description: "Participants deploy SQL projects to different platforms"
+permalink: /LAB2/
+---
 
 **Overview:**
-- 2.0: Update your local repository from GitHub
-- 2.1: Create a pipeline for SQL Server 2022
-- 2.2: Create a SQL database in Fabric and use source control integration
+- [2.0](#20-update-your-local-repository-from-github): Update your local repository from GitHub
+- [2.1](#21-create-a-pipeline-for-sql-server-2022): Create a pipeline for SQL Server 2022
+- [2.2](#22-create-a-fabric-sql-database-and-use-source-control-integration): Create a SQL database in Fabric and use source control integration
 
 ## 2.0 Update your local repository from GitHub
 
@@ -22,6 +27,7 @@ SQL projects are a shared format across the SQL family, including using the same
 In this example, we're going to create a pipeline that runs a test deploy of the SQL project, using a SQL 2022 container inside the pipeline. The same concepts we use to run the deployment in a container can be used to run the deployment on a SQL Server instance.
 
 1. In the `.github/workflows` folder, create a new file named `build-sql2022.yml` with the following content:
+  {% raw %}
   ```yml
   name: Test SQL project with SQL Server 2022
 
@@ -80,7 +86,10 @@ In this example, we're going to create a pipeline that runs a test deploy of the
           run: |
             sqlpackage /Action:Publish /SourceFile:Wingtips/bin/Debug/Wingtips.dacpac /TargetConnectionString:"Data Source=localhost,1433;Database=Wingtips;User ID=sa;Password=${{ secrets.CONTAINER_SQL_PASSWORD }};TrustServerCertificate=True;" /p:AllowIncompatiblePlatform=true
    ```
+  {% endraw %}
   The SqlPackage command is the same as the one we used for Azure SQL Database, but with the `AllowIncompatiblePlatform` flag allows us to deploy to a different platform than what the project targets.
+
+{:start="2"}
 2. Commit the file to the `main` branch and push it to GitHub.
 3. In GitHub, navigate to the repository settings and select the `Secrets and variables` tab.
 4. Click on the `Actions` tab and create a new secret named `CONTAINER_SQL_PASSWORD` with a value of your choice (like `Password123` or `SqlProjectsAreC00l`). This password will be used to connect to the SQL Server container. The password must meet the SQL Server password complexity requirements (3 of the 4 character sets, over 8 characters long).
@@ -101,10 +110,11 @@ In this exercise, you will create a Fabric SQL database and use source control i
 
 1. In GitHub, create a fine-grained [access token](https://github.com/settings/personal-access-tokens/new) with read and write access to your workshop repository. These are created in GitHub **settings** under **Developer settings**. **Fine-grained tokens** are located under **Personal access tokens**. The token should be given **repository access** to only the repository you created for this workshop. Expand the **repository permissions** section and select **Read and write** for the **contents** permission.
 
-![repo access](images/pat-repo-access.png)
+  ![repo access](images/pat-repo-access.png)
 
-![permissions](images/pat-permissions.png)
+  ![permissions](images/pat-permissions.png)
 
+{:start="2"}
 2. Click **Generate token** and copy the token to your clipboard before pasting it into a temporary text file. You will not be able to see the token again after you leave the page, so make sure to copy it somewhere safe for the next few steps.
 3. In Fabric, create a new workspace.
 4. In the workspace, open settings and connect the workspace to the GitHub repository. Use the `main` branch and  (https://learn.microsoft.com/fabric/cicd/git-integration/git-get-started?tabs=github%2CGitHub%2Ccommit-to-git) **set the Git folder to FabricWorkspace**.
@@ -124,8 +134,9 @@ In this exercise, you will create a Fabric SQL database and use source control i
 
 2. You should see the new `FabricWorkspace` folder in your VS Code file explorer. We will copy the objects from Wingtips SQL project into this folder by copying the **dbo** folder from the **Wingtips** folder into the **Wingtips.SQLDatabase** folder. Leave the `Wingtips.sqlproj` file and the `.platform` file as-is.
 
-![file explorer](images/dbo-copied.png)
+  ![file explorer](images/dbo-copied.png)
 
+{:start="3"}
 3. We'd like to create the objects from the SQL project in Fabric, which we can do by updating the database from source control. Commit the local changes and push them to the GitHub repository.
 4. In Fabric, open the source control pane. It may take a few moments for the browser to show that new changes are available, but click the **Update all** button when it is enabled. Behind the scenes, the SQL project is being built and deployed from source control, updating our Fabric Wingtips database.
 5. When the Fabric notification appears that the update has completed, open the SQL editor in Fabric and expand the object explorer to confirm the database objects are present.
@@ -135,11 +146,10 @@ In this exercise, you will create a Fabric SQL database and use source control i
 With our database created and the objects in source control, we can now work with the source control integration bi-directionally (in both directions).
 
 1. From the Fabric SQL editor, open a new query window and run the following SQL to modify the database:
-
-```sql
-CREATE INDEX IX_Customers_PostalCode ON Customers (PostalCode);
-GO
-```
+  ```sql
+  CREATE INDEX IX_Customers_PostalCode ON Customers (PostalCode);
+  GO
+  ```
 
 2. In the Fabric workspace, open the source control panel to commit the changes.
 3. Navigate to the `GitHub` repository and open the `FabricWorkspace/Wingtips.SQLDatabase` folder. When you select the **History** view, you should see the commit you just made to the database. The commit message will be the same as the one you entered in Fabric.
@@ -157,23 +167,24 @@ With the bi-directional source control integration, you can create changes in di
 
 3. We're going to create a new view for "Music Venues" for our SQL database in Fabric, which presents a list of venues where the venue type is in one of several different categories. Locate the `Views` folder for the `dbo` schema in the `FabricWorkspace` directory. In the `Views` folder create a new file named `MusicVenues.sql` with the following content:
 
-```sql
-CREATE VIEW dbo.MusicVenues
-AS
-SELECT v.VenueId
-  , v.VenueName
-  , v.VenueType
-  , v.AdminEmail
-  , v.AdminPassword
-  , v.PostalCode
-  , v.CountryCode
-  , v.RowVersion
-FROM dbo.Venues v
-LEFT JOIN dbo.VenueTypes vt
-ON v.VenueType = vt.VenueType
-WHERE vt.EventTypeShortName IN ('Concert', 'Session', 'Opera');
-```
+  ```sql
+  CREATE VIEW dbo.MusicVenues
+  AS
+  SELECT v.VenueId
+    , v.VenueName
+    , v.VenueType
+    , v.AdminEmail
+    , v.AdminPassword
+    , v.PostalCode
+    , v.CountryCode
+    , v.RowVersion
+  FROM dbo.Venues v
+  LEFT JOIN dbo.VenueTypes vt
+  ON v.VenueType = vt.VenueType
+  WHERE vt.EventTypeShortName IN ('Concert', 'Session', 'Opera');
+  ```
 
+{:start="4"}
 4. In the SQL database projects extension, identify which Wingtips project is the project for SQL database in Fabric by one of the following methods:
 - hover over the project name and look for the `FabricWorkspace` folder in the path
 - right-click the project and select **Change target platform**. The target platform should mention Fabric.
@@ -196,4 +207,4 @@ WHERE vt.EventTypeShortName IN ('Concert', 'Session', 'Opera');
 
 ## Next lab
 
-[LAB 3: Participants implement advanced DevOps practices in their SQL projects](../LAB3/README.md)
+[Lab  3: Participants implement advanced DevOps practices in their SQL projects](/LAB3/)
