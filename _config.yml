@@ -2,7 +2,7 @@ title: SQL DevOps workshop
 description: SQL projects and source control integration for SQL in Fabric, Azure SQL, and SQL Server
 
 theme: minima
-url: "https://green-pebble-023b10a10-5.centralus.6.azurestaticapps.net"
+url: ""
 # gets the 5 from ${{ github.event.number }}
 baseurl: ""
 
