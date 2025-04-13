@@ -1,0 +1,47 @@
+---
+# required front matter
+---
+$content-width:    1200px !default;
+
+$on-palm:          600px !default;
+$on-laptop:        1200px !default;
+
+$brand-color: #2a4fe2 !default;
+
+.nav-leader {
+  margin-right: 20px;
+  font-weight: bold;
+}
+
+h1 {
+  font-size: 2.3rem;
+}
+
+h2 {
+  font-size: 1.9em;
+}
+
+h3 {
+  font-size: 1.6em;
+}
+
+@import "minima";
+
+.header-icon {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  fill: #{$brand-color};
+  padding-right: 5px;
+  vertical-align: text-top; // text-top
+}
+
+
+.h1-icon {
+  width: 42px;
+  height: 42px;
+  display: inline-block;
+  fill: #{$brand-color};
+  padding-right: 5px;
+  vertical-align: text-top; // text-top
+}

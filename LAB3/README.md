@@ -1,9 +1,14 @@
-# LAB 3: Participants implement advanced DevOps practices in their SQL projects
+---
+layout: page
+title: "Lab 3"
+description: "Participants implement advanced DevOps practices in their SQL projects"
+permalink: /LAB3/
+---
 
 **Overview:**
-- 3.1: Static data management through a post-deployment script
-- 3.2: Deploy script and environment approvals
-- 3.3: Deploy report and summarizing dangers
+- [3.1](#31-static-data-management-through-a-post-deployment-script): Static data management through a post-deployment script
+- [3.2](#32-deploy-script-and-environment-approvals): Deploy script and environment approvals
+- [3.3](#33-deploy-report-and-summarizing-dangers): Deploy report and summarizing dangers
 
 ## 3.1 Static data management through a post-deployment script
 
@@ -64,6 +69,7 @@ In this section we're going to tackle the need for specific data to always be pr
 
   Notice how the code is idempotent using a `MERGE` statement. This means that if the data already exists in the table, it will be updated. If it does not exist, it will be inserted. No matter how many time the script is run, the outcome should be the same.
 
+{:start="5"}
 5. Create a new branch in VS Code called `static-data`.
 6. Commit the changes from the new post deployment script and push the `static-data` branch to the GitHub repository.
 7. Create a pull request in GitHub to merge the `static-data` branch into the `main` branch.
@@ -77,6 +83,7 @@ In this section we're going to tackle the need for specific data to always be pr
       ('swimming','Swimming Venue','Swimming Meet','Meet','Meets','en-us')
 ```
 
+{:start="12"}
 12. Commit the changes from the new post deployment script and push the `static-data` branch to the GitHub repository.
 13. Create a pull request in GitHub to merge the `static-data` branch into the `main` branch.
 14. If your CI static code analysis passes, merge the pull request.
@@ -109,6 +116,7 @@ At the end of this section, your deployment pipeline will still be manually trig
 
 ![New environment](./images/github_environment.png)
 
+{:start="4"}
 4. Name the environment `ProductionDeployment` and click on **Configure environment**.
 5. Check the box for **Required reviewers** and add yourself as a reviewer.
 6. Click on **Save protection rules**.
@@ -131,6 +139,7 @@ jobs:
 ...
 ```
 
+{:start="3"}
 3. Modify the `deploy` job to use the `ProductionDeployment` environment (`environment: ProductionDeployment`) and add a `needs:` setting to ensure that the `deploy` job runs after the `build` job (`needs: build`). The `needs:` setting is used to specify that the `deploy` job depends on the successful completion of the `build` job and the `environment:` setting is used so the job will run in the `ProductionDeployment` environment we just created that requires approval.
 
 
@@ -141,8 +150,10 @@ jobs:
     needs: build
 ```
 
+{:start="4"}
 4. Add 3 steps and a `runs-on` setting to the `build` job to build the project, use SqlPackage to generate a deployment script, and archive the script for review. Generating a deployment script with SqlPackage uses the SqlPackage **script** action, which uses the same parameters and properties as the publish action but does not perform the actual deployment in lieu of outputting the script it would execute. In our example we're sending the deployment script to a file named `WingtipsDeploy.sql` in the root of the repository.
 
+{% raw %}
 ```yaml
   build:
     runs-on: ubuntu-22.04
@@ -165,9 +176,10 @@ jobs:
       with:
         name: WingtipsDeploy.sql
 ```
+{% endraw %}
 
-
-<details>
+{% raw %}
+<details markdown="1">
 <summary>Entire 2-job workflow</summary>
 
 ```yaml
@@ -222,7 +234,9 @@ jobs:
 ```
 
 </details>
+{% endraw %}
 
+{:start="5"}
 5. Commit the changes to the `publish.yml` file and push the changes to the `main` branch.
 6. In the GitHub repository, click on the **Actions** tab.
 7. Click on the **Deploy SQL project** workflow.
@@ -234,6 +248,7 @@ jobs:
 
 ![Deploy approval](./images/github_action_approval.png)
 
+{:start="11"}
 11. When you've reviewed the script, click on the **Review deployments** button to approve the job to be run in the `ProductionDeployment` environment. This will enable the `deploy` job to run, which will start immediately since we waited for the `build` job to complete successfully. The `deploy` job will run the deployment against the Azure SQL Database.
 
 ## 3.3 Deploy report and summarizing dangers
@@ -355,11 +370,13 @@ if ($debugMode) {
 }
 ```
 
+{:start="3"}
 3. In the `publish.yml` workflow file, add steps a the end of the `build`job (after the step `Upload SQL script`) to:
   - run SqlPackage with the *DeployReport* action
   - pass the output to the `deployReportOutput.ps1` script
   - read (`cat`) the `deployreport.md` file and send it into the `GITHUB_STEP_SUMMARY` environment variable
 
+{% raw %}
 ```yaml
 
     - name: Generate deploy report
@@ -372,9 +389,10 @@ if ($debugMode) {
       run: |
         cat deployreport.md >> $GITHUB_STEP_SUMMARY
 ```
+{% endraw %}
 
-
-<details>
+{% raw %}
+<details markdown="1">
 <summary>Entire 2-job workflow</summary>
 
 ```yaml
@@ -436,11 +454,15 @@ jobs:
 ```
 
 </details>
+{% endraw %}
+
+{:start="4"}
 
 4. Commit the changes to the `publish.yml` file and push the changes to the `main` branch.
 
 To test out our expanded workflow, we will add a column to the `Events` table and see how the deploy report can help us catch changes that should only be deployed in certain circumstances.
 
+{:start="5"}
 5. Create a new branch in VS Code called `event-parentid`.
 6. Open the `Events.sql` file in the `Wingtips` project (`Wingtips/dbo/Tables/Events.sql`) and add a new column `ParentEventId` to the `Events` table between the `Subtitle` and `Date` columns. The new column should be of type `INT` and allow null values.
 
@@ -460,6 +482,7 @@ CREATE TABLE [dbo].[Events] (
 GO
 ```
 
+{:start="7"}
 7. Commit the changes to the `Events.sql` file and push the changes to the `event-parentid` branch.
 8. Create a pull request in GitHub to merge the `event-parentid` branch into the `main` branch.
 9. If your CI static code analysis passes, merge the pull request.
@@ -471,6 +494,7 @@ When the `build` job is complete, a **build summary** section will be populated 
 
 ![Deploy report](./images/github_summary.png)
 
+{:start="13"}
 13. Since the **build summary** section includes an alert for data motion, we know we need to be sure to consider the deployment more carefully. Armed with the name of the table, we might check how large the table is or how much traffic it gets during our deployment window before proceeding.
 
 14. Don't know what "data motion" means? Check out the deployment script artifact to see what the SqlPackage deployment will need to do to add the column in the middle of the table.
@@ -482,4 +506,4 @@ When the `build` job is complete, a **build summary** section will be populated 
 
 ## Next lab
 
-[LAB 4: Troubleshooting and Optimizing DevOps Workflows](../LAB4/README.md)
+[Lab  4: Troubleshooting and Optimizing DevOps Workflows](/LAB4/)

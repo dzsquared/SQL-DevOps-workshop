@@ -1,8 +1,13 @@
-# LAB0: Prerequisites and setup
+---
+layout: page
+title: "Lab 0"
+description: "Prerequisites and setup"
+permalink: /LAB0/
+---
 
 This folder (LAB0) contains the SQL project for the initial state of the Wingtips database provided to students at the beginning of the series of labs. 
 
-If you are performing the labs as part of a workshop, the instructor may provide you with a student connection string to the Wingtips database such that you can immediately start **LAB1**.
+If you are performing the labs as part of a workshop, the instructor may provide you with a student connection string to the Wingtips database such that you can immediately start **Lab 1**.
 
 If you are performing the labs as part of a self-paced learning experience, you may need to deploy the initial state of the Wingtips database yourself. The instructions for deploying the initial state of the Wingtips database are provided below.
 
@@ -61,4 +66,4 @@ sqlpackage /a:publish /sf:"modules/LAB0/Wingtips-initial/bin/Debug/Wingtips-init
 
 ## Next lab
 
-[LAB 1: Participants configure a simple CI/CD pipelines for a sample SQL project](../LAB1/README.md)
+[Lab  1: Participants configure a simple CI/CD pipelines for a sample SQL project](/LAB1/)

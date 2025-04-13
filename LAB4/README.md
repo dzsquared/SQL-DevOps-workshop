@@ -1,9 +1,14 @@
-# LAB 4: Troubleshooting and Optimizing DevOps Workflows
+---
+layout: page
+title: "Lab 4"
+description: "Troubleshooting and Optimizing DevOps Workflows"
+permalink: /LAB4/
+---
 
 **Overview:**
-- 4.1: Creating a rollback point when the deployment is successful
-- 4.2: Incorporating data cleaning pre-deployment scripts
-- 4.3: Source control for a rogue database
+- [4.1](#41-creating-a-rollback-point-when-the-deployment-is-successful): Creating a rollback point when the deployment is successful
+- [4.2](#42-incorporating-data-cleaning-pre-deployment-scripts): Incorporating data cleaning pre-deployment scripts
+- [4.3](#43-source-control-for-a-rogue-database): Source control for a rogue database
 
 ## 4.1 Creating a rollback point when the deployment is successful
 
@@ -26,6 +31,7 @@ The `DBVersion` input parameter will be added to the GitHub interface such that 
 
 ![run action](./images/action_dbversion.png)
 
+{:start="3"}
 3. Add a step to the end of the `Publish` job, after the `Publish SQL project` step, to create a GitHub release. We'll use the `softprops/action-gh-release` action because it facilitates the creation of a release and the uploading of Wingtips dacpac to that release.
 
 ```yaml
@@ -44,8 +50,8 @@ As time allows, run the workflow manually from the GitHub interface. You will be
 
 ![new GitHub release](./images/release_dacpac.png)
 
-
-<details>
+{% raw %}
+<details markdown="1">
 <summary>Expanded publish workflow</summary>
 
 ```yaml
@@ -124,6 +130,7 @@ jobs:
 ```
 
 </details>
+{% endraw %}
 
 
 ## 4.2 Incorporating data cleaning pre-deployment scripts
@@ -142,6 +149,7 @@ Tracking the database version is enabled through a new schema `control` in the d
 CREATE SCHEMA control;
 ```
 
+{: start="4"}
 4. Add a new folder to the `control` folder called `Tables` and add a new file `DeployedVersions.sql` to the `Tables` folder.
 5. Add the following code to the `DeployedVersions.sql` file:
 
@@ -153,6 +161,8 @@ CREATE TABLE [control].[DeployedVersions] (
     CONSTRAINT [PK_DeployedVersions] PRIMARY KEY CLUSTERED ([VersionNumber])
 );
 ```
+
+{: start="6"}
 6. Add a new folder to the `control` folder called `ScalarFunctions` and add a new file `VersionCompare_IsGreaterThan.sql` to the `ScalarFunctions` folder.
 7. Add the following code to the `VersionCompare_IsGreaterThan.sql` file:
 
@@ -184,6 +194,7 @@ BEGIN
 END
 ```
 
+{: start="8"}
 8. Open the SQL projects extension in VS Code.
 9. Right-click on the **SQLCMD Variables** node under the Wingtips project and select **Add SQLCMD Variable**.
 10. Name the variable `DBVersion` and set the default value to `0.0.0`.
@@ -231,23 +242,29 @@ END
 
 Since we've added a new SQLCMD variable to the project, we need to update any deployments to pass the SQLCMD variable to the deployment.
 
+{:start="4"}
 4. Open the `build-sql2022.yml` file in the `.github/workflows` directory in VS Code.
 5. The `Publish SQL project` step needs to be updated to pass the SQLCMD variable to the deployment. SqlPackage uses `/v:VariableName=value` syntax, so we will update the `Publish SQL project` step with the value of `DBVersion` from the GitHub input (`${{github.events.inputs.DBVersion}}`).
 
+{% raw %}
 ```yaml
       - name: Publish SQL project
         run: |
           sqlpackage /Action:Publish /SourceFile:Wingtips/bin/Debug/Wingtips.dacpac /TargetConnectionString:"Data Source=localhost,1433;Database=Wingtips;User ID=sa;Password=${{ secrets.CONTAINER_SQL_PASSWORD }};TrustServerCertificate=True;" /p:AllowIncompatiblePlatform=true  /v:DBVersion=${{ github.event.inputs.DBVersion }}
 ```
+{% endraw %}
 
+{:start="6"}
 6. Open the `publish.yml` file in the `.github/workflows` directory in VS Code.
 7. Locate all (three) instances of SqlPackage - **Get deploy script**, **Generate deploy report**, and **Publish SQL project**. Append the `/v:DBVersion=${{ github.event.inputs.DBVersion }}` to the end of each of the three steps. The `Publish SQL project` step should look like this:
 
+{% raw %}
 ```yaml
     - name: Publish SQL project
       run: |
         sqlpackage /Action:Publish /SourceFile:Wingtips/bin/Debug/Wingtips.dacpac /TargetConnectionString:"${{ secrets.SQL_CONNECTION_STRING }}" /v:DBVersion=${{ github.event.inputs.DBVersion }}
 ```
+{% endraw %}
 
 
 As time allows, run the deploy workflow manually from the GitHub interface. Enter a new version number, like `1.1.0`. The workflow will run and create a release with the Wingtips.dacpac file and you should be able to see the deployed version in the `DeployedVersions` table.
@@ -261,8 +278,8 @@ SELECT TOP (1000) [VersionNumber]
 
 ![deployed versions](./images/deployedversions.png)
 
-
-<details>
+{% raw %}
+<details markdown="1">
 <summary>Expanded publish workflow</summary>
 
 ```yaml
@@ -340,6 +357,7 @@ jobs:
 
 ```
 </details>
+{% endraw %}
 
 ## 4.3 Source control for a rogue database
 
@@ -376,6 +394,7 @@ permissions:
   pull-requests: write
 ```
 
+{:start="2"}
 2. Add a new job to the workflow called `validate-db` that starts by checking out the repo files and setting a variable for the current timestamp. The timestamp will be used to create a new branch for any changes that are found in the database:
 
 ```yaml
@@ -391,10 +410,12 @@ jobs:
         run: echo "branchtimestamp=$(date +'%Y-%m-%d-%H-%M-%S')" >> $GITHUB_OUTPUT
 ```
 
+{:start="3"}
 3. We can use the SqlPackage **extract** command to get the current state of the database as a set of *.sql* files or as a *.dacpac* file. The *.sql* files are more useful for source control, so we will use the **extract** command with the `/p:ExtractTarget` option set to `SchemaObjectType`. The output will be a folder with the name `WingtipsFromLiveDB` that contains all of the database objects in a folder structure is similar to how we would lay out a SQL project. For the SqlPackage **extract** command to succeed, we have to remove the existing `WingtipsFromLiveDB` folder if it exists. We will also add a step to create a new SQL project in the folder, which is optional.
 
 *After we run the database extract, we remove the student.sql file from the `Security` folder. SqlPackage hashes out SQL authentication passwords, resulting in this file always having a change in the user definition.*
 
+{% raw %}
 ```yaml
       - name: '3. Reset existing database files in repo'
         run: rm -f -r WingtipsFromLiveDB
@@ -409,7 +430,9 @@ jobs:
           dotnet new install microsoft.build.sql.templates
           dotnet new sqlproj -o WingtipsFromLiveDB -tp SqlAzureV12
 ```
+{% endraw %}
 
+{:start="4"}
 4. When we're in a UI tool like VS Code, we can see whether files have been changed from the source control view. In a pipeline, we're able to use CLI options to check for changes. We can use the `git status` command to check for changes in the `WingtipsFromLiveDB` folder. The `--porcelain` option will give us a machine-readable output, and we can use `wc -l` to count the number of lines in the output. If there are any changes, we will create a new branch and commit the changes.
 
 ```yaml
@@ -418,6 +441,7 @@ jobs:
         run: echo "changed=$(git status --porcelain | wc -l)" >> $GITHUB_OUTPUT
 ```
 
+{:start="5"}
 5. If there are changes, we will create a new branch and commit the changes. The step uses an `if` parameter to compare the `GITHUB_OUTPUT` from the `get_changes` step. There's 7 individual git commands to commit and push changes in a pipeline:
   - `git config` to set the user email
   - `git config` to set the user name
@@ -439,8 +463,10 @@ jobs:
           git push -u origin db-deconstruction-${{ steps.timestamp.outputs.branchtimestamp }}
 ```
 
+{:start="6"}
 6. The last required step is to create a pull request with the changes. We will use the `vsoch/pull-request-action` action to create a pull request from the new branch to the main branch. This action utilizes the automatic `GITHUB_TOKEN` secret on the repository, no setup is required to use the token.
 
+{% raw %}
 ```yaml
       # open pull request
       - name: '7. open a pull request'
@@ -453,9 +479,12 @@ jobs:
           PULL_REQUEST_BRANCH: "main"
           PULL_REQUEST_TITLE: "Update database state"
 ```
+{% endraw %}
 
+{:start="7"}
 7. Since we learned earlier about using the `$GITHUB_STEP_SUMMARY` variable to output information to the GitHub interface, we can use it here to output a summary of the changes. The summary will include a link to the pull request that was created. The `steps.get_changes.outputs.changed` variable is used to determine whether there were any changes in the database and control which summary to output.
 
+{% raw %}
 ```yaml
       - name: '8a. output summary with PR link'
         if: steps.get_changes.outputs.changed != 0
@@ -467,9 +496,10 @@ jobs:
         run: |
           echo "### :tada: No database drift detected" >> $GITHUB_STEP_SUMMARY
 ```
+{% endraw %}
 
-
-<details>
+{% raw %}
+<details markdown="1">
 <summary>Complete rogue DB workflow</summary>
 
 ```yaml
@@ -547,6 +577,7 @@ jobs:
 ```
 
 </details>
+{% endraw %}
 
 
 ### Test the workflow
@@ -559,10 +590,12 @@ To test this workflow, we need to run it once to capture the current state of th
 
 ![rogue db workflow summary](./images/rogue_db_summary.png)
 
+{:start="4"}
 4. This initial pull request contains the entire state of the database written to the `WingtipsFromLiveDB` folder. Merge the pull request to the main branch of the repository.
 
 ![rogue db pull request](./images/rogue_db_pr.png)
 
+{:start="5"}
 5. Once the pull request is merged, delete the temporary db-deconstruction branch that was created.
 
 ### Make an "off-process change" to the database
@@ -592,6 +625,7 @@ WHERE vt.EventTypeShortName IN ('Concert', 'Session', 'Opera')
 GO
 ```
 
+{: start="4"}
 4. Click the **Execute** button to modify the database.
 5. In the GitHub interface, navigate to the **Actions** tab and select the **rogue database** workflow.
 6. Click the **Run workflow** button to run the workflow manually.
@@ -602,6 +636,7 @@ GO
 
 ![rogue db pull request](./images/rogue_db_pr2.png)
 
+{:start="9"}
 9. Merge the pull request to the main branch of the repository.
 10. Once the pull request is merged, delete the temporary db-deconstruction branch that was created.
 

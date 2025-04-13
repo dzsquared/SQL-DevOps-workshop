@@ -1,49 +1,54 @@
+---
+# Feel free to add content and custom Front Matter to this file.
+# To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
 
-## Abstract
+layout: home
+---
+ 
+# SQL projects and source control integration for SQL in Fabric, Azure SQL, and SQL Server
+
+Permalink: [https://aka.ms/sql-devops-workshop](https://aka.ms/sql-devops-workshop)
+
+## Summary
 
 This workshop is a deep dive on database DevOps centered on the SQL database projects format, where you will learn practical techniques for managing database changes whether your workload is operational, analytical, or somewhere in between. Our exploration begins with the foundational CI/CD capabilities for SQL projects, where you can ensure no matter how a database is developed it is in source control and can be verified before deployments to one or more environments. The same shared SQL projects format applies to the whole Microsoft SQL family, so we'll examine the advantages and special capabilities to understand when implementing DevOps practices for Fabric SQL, Azure SQL, or SQL Server. We conclude our workshop with some special topics at the core of good data DevOps practices, including security management, static data management, and coordinating changes with other workloads.
 
 ## Workshop labs
 
-### Summary
-- [Lab 0: Setup](LAB0/README.md)
-- [Lab 1: Participants configure a simple CI/CD pipelines for a sample SQL project](LAB1/README.md)
-- [Lab 2: Participants deploy SQL projects to different platforms](LAB2/README.md)
-- [Lab 3: Participants implement advanced DevOps practices in their SQL projects](LAB3/README.md)
-- [Lab 4: Troubleshooting and Optimizing DevOps Workflows](LAB4/README.md)
+- [Lab 0: Setup](LAB0/)
+- [Lab 1: Participants configure a simple CI/CD pipelines for a sample SQL project](LAB1/)
+- [Lab 2: Participants deploy SQL projects to different platforms](LAB2/)
+- [Lab 3: Participants implement advanced DevOps practices in their SQL projects](LAB3/)
+- [Lab 4: Troubleshooting and Optimizing DevOps Workflows](LAB4/)
 
-### LAB 1: Participants configure a simple CI/CD pipelines for a sample SQL project
+### [Lab 1](LAB1/): Participants configure a simple CI/CD pipelines for a sample SQL project
 
-**Overview:**
 - 1.1: Create a project from an existing database
 - 1.2: Create a pipeline to publish the project to the database
 - 1.3: Create a pipeline to build the project and run code analysis
 - 1.4: Deploy our changes to the database
 
-### LAB 2: Participants deploy SQL projects to different platforms
+### [Lab 2](LAB2/): Participants deploy SQL projects to different platforms
 
-**Overview:**
 - 2.0: Update your local repository from GitHub
 - 2.1: Create a pipeline for SQL Server 2022
 - 2.2: Create a SQL database in Fabric and use source control integration
 
-### LAB 3: Participants implement advanced DevOps practices in their SQL projects
+### [Lab 3](LAB3/): Participants implement advanced DevOps practices in their SQL projects
 
-**Overview:**
 - 3.1: Static data management through a post-deployment script
 - 3.2: Deploy script and environment approvals
 - 3.3: Deploy report and summarizing dangers
 
-### LAB 4: Troubleshooting and Optimizing DevOps Workflows
+### [Lab 4](LAB4/): Troubleshooting and Optimizing DevOps Workflows
 
-**Overview:**
 - 4.1: Creating a rollback point when the deployment is successful
 - 4.2: Incorporating data cleaning pre-deployment scripts
 - 4.3: Source control for a rogue database
 
 ## Workshop contents
 
-This site provides a walk-through of the workshop labs with checkpoints that can be expanded to check your work. The contents of this site are available at https://github.com/dzsquared/sql-devops-workshop, including the full expected results of each lab. This project is licensed under the MIT License such that it can be used in whole or part to help others improve their database DevOps implementations - see the [LICENSE](LICENSE.md) file for details.
+This site provides a walk-through of the workshop labs with checkpoints that can be expanded to check your work. The contents of this site are available at [https://github.com/dzsquared/sql-devops-workshop](https://github.com/dzsquared/sql-devops-workshop), including the full expected results of each lab. This project is licensed under the MIT License such that it can be used in whole or part to help others improve their database DevOps implementations - see the [LICENSE](LICENSE.md) file for details.
 
 If you have feedback about the workshop, open an issue to share your thoughts, suggestions, or any issues you encounter. Pull requests are also welcome if you want to contribute to workshop content.
 
