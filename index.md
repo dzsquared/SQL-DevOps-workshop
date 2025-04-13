@@ -50,7 +50,7 @@ This workshop is a deep dive on database DevOps centered on the SQL database pro
 
 This site provides a walk-through of the workshop labs with checkpoints that can be expanded to check your work. The contents of this site are available at [https://github.com/dzsquared/sql-devops-workshop](https://github.com/dzsquared/sql-devops-workshop), including the full expected results of each lab. This project is licensed under the MIT License such that it can be used in whole or part to help others improve their database DevOps implementations - see the [LICENSE](LICENSE.md) file for details.
 
-If you have feedback about the workshop, open an issue to share your thoughts, suggestions, or any issues you encounter. Pull requests are also welcome if you want to contribute to workshop content.
+If you have feedback about the workshop, open an issue to share your thoughts, suggestions, or any issues you encounter. Pull requests are also welcome if you want to contribute to workshop content. Check out the [CONTRIBUTING](/contributing/) page for more information on how to contribute.
 
 ## About the initial authors
 
