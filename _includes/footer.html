@@ -18,8 +18,9 @@
             {%- if site.email -%}
             <li><a class="u-email" href="mailto:{{ site.email }}">{{ site.email }}</a></li>
             {%- endif -%}
-            {%- if site.github_repo -%}<li><a href="https://github.com/{{ site.github_repo }}"><svg class="svg-icon"><use xlink:href="{{ '/assets/minima-social-icons.svg#github' | relative_url }}"></use></svg> <span class="username">{{ site.github_repo| escape }}</span></a></li>{%- endif -%}
             {%- if site.perma_link -%}<li><a href="{{ site.perma_link }}"><svg class="svg-icon"><use xlink:href="{{ '/assets/solid.svg#link' | perma_link }}"></use></svg> <span class="username">{{ site.perma_link }}</span></a></li>{%- endif -%}
+            {%- if site.github_repo -%}<li><a href="https://github.com/{{ site.github_repo }}"><svg class="svg-icon"><use xlink:href="{{ '/assets/minima-social-icons.svg#github' | relative_url }}"></use></svg> <span class="username">{{ site.github_repo| escape }}</span></a></li>{%- endif -%}
+            {%- if page.path -%}<li><a href="https://github.com/{{ site.github_repo }}/blob/main/{{ page.path }}"><svg class="svg-icon"><use xlink:href="{{ '/assets/solid.svg#pencil' | relative_url }}"></use></svg> <span class="username">Edit this page</span></a></li>{%- endif -%}
         </ul>
       </div>
 
